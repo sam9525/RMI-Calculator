@@ -136,6 +136,6 @@ public class CalculatorImplementation implements Calculator {
    * @return The least common multiple of the two numbers.
    */
   public int lcm(int a, int b) {
-    return a * (b / gcd(a, b));
+    return a * b / gcd(a, b);
   }
 }
