@@ -11,4 +11,14 @@ public class CalculatorImplementation implements Calculator {
   public CalculatorImplementation() throws RemoteException {
     stack = new Stack<>();
   }
+
+  /**
+   * Pushes a value onto the calculator's stack.
+   * This method is synchronized to ensure thread safety.
+   *
+   * @param val The value to be pushed onto the stack.
+   */
+  public synchronized void pushValue(int val) throws RemoteException {
+    stack.push(val);
+  }
 }
