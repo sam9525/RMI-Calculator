@@ -78,6 +78,26 @@ public class CalculatorImplementation implements Calculator {
   }
 
   /**
+   * Pops the top element from the stack.
+   *
+   * @return The top element from the stack.
+   * @throws RemoteException If the stack is empty.
+   */
+  public synchronized int pop() throws RemoteException {
+    // Checks if the stack is empty
+    if (isEmpty()) {
+      throw new RemoteException("The stack is empty.");
+    }
+
+    // Checks if the top of the stack is an integer
+    if (stack.peek() instanceof Integer) {
+      return (int) stack.pop();
+    } else {
+      throw new RemoteException("The top of the stack is not an integer.");
+    }
+  }
+
+  /**
    * Calculates the greatest common divisor of two numbers using the Euclidean algorithm.
    *
    * @param a The first number.
