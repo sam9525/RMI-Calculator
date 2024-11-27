@@ -67,4 +67,15 @@ public class CalculatorImplementation implements Calculator {
 
     stack.push(result);
   }
+
+  /**
+   * Calculates the greatest common divisor of two numbers using the Euclidean algorithm.
+   *
+   * @param a The first number.
+   * @param b The second number.
+   * @return The greatest common divisor of the two numbers.
+   */
+  public int gcd(int a, int b) {
+    return b == 0 ? a : gcd(b, a % b);
+  }
 }
