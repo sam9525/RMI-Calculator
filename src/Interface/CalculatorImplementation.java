@@ -34,7 +34,7 @@ public class CalculatorImplementation implements Calculator {
   public synchronized void pushOperation(String operator)
     throws RemoteException {
     // Checks if the stack is empty
-    if (stack.isEmpty()) {
+    if (isEmpty()) {
       throw new RemoteException("There are no numbers to be calculated.");
     }
 
@@ -66,6 +66,15 @@ public class CalculatorImplementation implements Calculator {
     }
 
     stack.push(result);
+  }
+
+  /**
+   * Checks if the stack is empty.
+   *
+   * @return True if the stack is empty, false otherwise.
+   */
+  public synchronized boolean isEmpty() throws RemoteException {
+    return stack.empty();
   }
 
   /**
