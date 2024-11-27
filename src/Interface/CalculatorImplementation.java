@@ -98,6 +98,23 @@ public class CalculatorImplementation implements Calculator {
   }
 
   /**
+   * Delays the execution of the pop method by the specified number of milliseconds.
+   *
+   * @param millis The number of milliseconds to delay the execution.
+   * @return The result of the pop operation after the delay.
+   * @throws RemoteException If the thread is interrupted.
+   */
+  public synchronized int delayPop(int millis) throws RemoteException {
+    try {
+      Thread.sleep(millis);
+    } catch (InterruptedException e) {
+      throw new RemoteException("Thread was interrupted.");
+    }
+
+    return pop();
+  }
+
+  /**
    * Calculates the greatest common divisor of two numbers using the Euclidean algorithm.
    *
    * @param a The first number.
