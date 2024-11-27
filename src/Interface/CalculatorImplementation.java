@@ -59,10 +59,16 @@ public class CalculatorImplementation implements Calculator {
         result = numStack.stream().max(Integer::compare).get();
         break;
       case "lcm":
-        result = numStack.stream().reduce(1, (x, y) -> lcm(x, y));
+        result = numStack.get(0);
+        for (int i = 1; i < numStack.size(); i++) {
+          result = lcm(result, numStack.get(i));
+        }
         break;
       case "gcd":
-        result = numStack.stream().reduce(0, (x, y) -> gcd(x, y));
+        result = numStack.get(0);
+        for (int i = 1; i < numStack.size(); i++) {
+          result = gcd(result, numStack.get(i));
+        }
         break;
       default:
         throw new RemoteException("Invalid operation.");
