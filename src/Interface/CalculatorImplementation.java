@@ -78,4 +78,15 @@ public class CalculatorImplementation implements Calculator {
   public int gcd(int a, int b) {
     return b == 0 ? a : gcd(b, a % b);
   }
+
+  /**
+   * Calculates the least common multiple of two numbers.
+   *
+   * @param a The first number.
+   * @param b The second number.
+   * @return The least common multiple of the two numbers.
+   */
+  public int lcm(int a, int b) {
+    return a * (b / gcd(a, b));
+  }
 }
