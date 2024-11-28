@@ -1,15 +1,24 @@
 package Interface;
 
 import java.rmi.RemoteException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Stack;
 
 public class CalculatorImplementation implements Calculator {
 
-  private Stack<Object> stack;
+  // Maps each client to their own stack
+  private Map<Long, Stack<Object>> clientStacks;
 
   // Initializes the stack for the calculator on the server
   public CalculatorImplementation() throws RemoteException {
-    stack = new Stack<>();
+    clientStacks = new HashMap<>();
+  }
+
+  // Gets current client's stack
+  private Stack<Object> getCurrentStack() {
+    long clientId = Thread.currentThread().threadId();
+    return clientStacks.computeIfAbsent(clientId, _ -> new Stack<>());
   }
 
   /**
@@ -19,7 +28,7 @@ public class CalculatorImplementation implements Calculator {
    * @param val The value to be pushed onto the stack.
    */
   public synchronized void pushValue(int val) throws RemoteException {
-    stack.push(val);
+    getCurrentStack().push(val);
   }
 
   /**
@@ -33,6 +42,8 @@ public class CalculatorImplementation implements Calculator {
    */
   public synchronized void pushOperation(String operator)
     throws RemoteException {
+    Stack<Object> stack = getCurrentStack();
+
     // Checks if the stack is empty
     if (isEmpty()) {
       throw new RemoteException("There are no numbers to be calculated.");
@@ -83,7 +94,7 @@ public class CalculatorImplementation implements Calculator {
    * @return True if the stack is empty, false otherwise.
    */
   public synchronized boolean isEmpty() throws RemoteException {
-    return stack.empty();
+    return getCurrentStack().empty();
   }
 
   /**
@@ -93,6 +104,8 @@ public class CalculatorImplementation implements Calculator {
    * @throws RemoteException If the stack is empty.
    */
   public synchronized int pop() throws RemoteException {
+    Stack<Object> stack = getCurrentStack();
+
     // Checks if the stack is empty
     if (isEmpty()) {
       throw new RemoteException("The stack is empty.");
@@ -147,6 +160,8 @@ public class CalculatorImplementation implements Calculator {
 
   @Override
   public void showAll() throws RemoteException {
+    Stack<Object> stack = getCurrentStack();
+
     if (stack.isEmpty()) {
       System.out.println("Stack is empty");
       return;
