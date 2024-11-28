@@ -38,8 +38,6 @@ public class CalculatorImplementation implements Calculator {
       throw new RemoteException("There are no numbers to be calculated.");
     }
 
-    stack.push(operator);
-
     Stack<Integer> numStack = new Stack<>();
 
     for (Object obj : stack) {
@@ -73,6 +71,8 @@ public class CalculatorImplementation implements Calculator {
       default:
         throw new RemoteException("Invalid operation.");
     }
+
+    stack.push(operator);
 
     stack.push(result);
   }
