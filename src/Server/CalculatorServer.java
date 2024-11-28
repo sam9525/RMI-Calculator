@@ -5,6 +5,7 @@ import Interface.CalculatorImplementation;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.Scanner;
 
 public class CalculatorServer {
 
@@ -25,6 +26,16 @@ public class CalculatorServer {
       registry.bind("Calculator", stub);
 
       System.out.println("Server ready.");
+
+      Scanner userInput = new Scanner(System.in);
+
+      while (true) {
+        String x = userInput.nextLine();
+
+        if (x.equals("showall")) {
+          calculator.showAll();
+        }
+      }
     } catch (Exception e) {
       System.err.println("Server exception: " + e.toString());
       e.printStackTrace();

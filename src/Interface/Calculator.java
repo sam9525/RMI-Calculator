@@ -14,4 +14,6 @@ public interface Calculator extends Remote {
   int pop() throws RemoteException;
   // Waits for millis milliseconds before performing the pop operation
   int delayPop(int millis) throws RemoteException;
+  // Shows all the elements in the stack
+  void showAll() throws RemoteException;
 }

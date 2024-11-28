@@ -144,4 +144,19 @@ public class CalculatorImplementation implements Calculator {
   public int lcm(int a, int b) {
     return a * b / gcd(a, b);
   }
+
+  @Override
+  public void showAll() throws RemoteException {
+    if (stack.isEmpty()) {
+      System.out.println("Stack is empty");
+      return;
+    }
+
+    System.out.println("\nCurrent stack contents:");
+    System.out.println("----------------------");
+    for (int i = 0; i < stack.size(); i++) {
+      System.out.printf("Position " + i + ": " + stack.get(i) + "\n");
+    }
+    System.out.println("----------------------");
+  }
 }
