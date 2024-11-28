@@ -20,6 +20,10 @@ public class CalculatorClient {
       // Lookup the calculator
       Calculator calculator = (Calculator) registry.lookup("Calculator");
 
+      // Register this client and get a unique ID
+      String clientId = calculator.registerClient();
+      System.out.println("Connected with Client ID: " + clientId);
+
       Scanner userInput = new Scanner(System.in);
 
       // Loop to continue the program
@@ -31,15 +35,15 @@ public class CalculatorClient {
           // Checks if the input is a number
           if (isNumber(x)) {
             try {
-              calculator.pushValue(Integer.parseInt(x));
+              calculator.pushValue(clientId, Integer.parseInt(x));
             } catch (Exception e) {
               System.err.println("Failed to push value : " + e.getMessage());
               e.printStackTrace();
             }
           } else {
             try {
-              calculator.pushOperation(x);
-              int result = calculator.delayPop(1000);
+              calculator.pushOperation(clientId, x);
+              int result = calculator.delayPop(clientId, 1000);
 
               System.out.println("Result: " + result);
               break;

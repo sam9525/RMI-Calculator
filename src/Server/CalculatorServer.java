@@ -31,9 +31,9 @@ public class CalculatorServer {
 
       while (true) {
         String x = userInput.nextLine();
-
         if (x.equals("showall")) {
-          calculator.showAll();
+          String clientId = userInput.nextLine();
+          calculator.showAll(clientId);
         }
       }
     } catch (Exception e) {

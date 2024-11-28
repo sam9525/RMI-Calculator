@@ -4,6 +4,8 @@ Using Java RMI to create a calculator for practice and to understand how to buil
 
 This calculator allows clients to enter multiple numbers and choose the method including min, max, lcm (Least Common Multiple) and gcd (Greatest Common Divisor).
 
+Every client has their own stack and the operations are performed on their own stack.
+
 ## Compiling
 
 Open a terminal at the (calculator) folder,
@@ -68,7 +70,19 @@ make clean
 >
 > Connect to the registry and lookup the calculator.
 >
+> Register a new client and get a unique ID
+>
+> ```
+> String clientId = calculator.registerClient();
+> ```
+>
 > ## Implementations
+>
+> Use a Map to store client-specific stacks.
+>
+> ```
+> private Map<Long, Stack<Object>> clientStacks;
+> ```
 >
 > ```
 > switch (operator.toLowerCase()) {

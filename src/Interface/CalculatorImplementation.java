@@ -4,20 +4,30 @@ import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class CalculatorImplementation implements Calculator {
 
   // Maps each client to their own stack
-  private Map<Long, Stack<Object>> clientStacks;
+  private Map<String, Stack<Object>> clientStacks;
+
+  // Keep track of the current client ID
+  private AtomicInteger clientCounter;
 
   // Initializes the stack for the calculator on the server
   public CalculatorImplementation() throws RemoteException {
     clientStacks = new HashMap<>();
+    clientCounter = new AtomicInteger(0);
+  }
+
+  public String registerClient() throws RemoteException {
+    String clientId = String.valueOf(clientCounter.incrementAndGet());
+    clientStacks.put(clientId, new Stack<>());
+    return clientId;
   }
 
   // Gets current client's stack
-  private Stack<Object> getCurrentStack() {
-    long clientId = Thread.currentThread().threadId();
+  public Stack<Object> getCurrentStack(String clientId) {
     return clientStacks.computeIfAbsent(clientId, _ -> new Stack<>());
   }
 
@@ -25,10 +35,12 @@ public class CalculatorImplementation implements Calculator {
    * Pushes a value onto the calculator's stack.
    * This method is synchronized to ensure thread safety.
    *
+   * @param clientId The ID of the client.
    * @param val The value to be pushed onto the stack.
    */
-  public synchronized void pushValue(int val) throws RemoteException {
-    getCurrentStack().push(val);
+  public synchronized void pushValue(String clientId, int val)
+    throws RemoteException {
+    getCurrentStack(clientId).push(val);
   }
 
   /**
@@ -37,15 +49,16 @@ public class CalculatorImplementation implements Calculator {
    * Creates a new stack numStack that stores only the Integers from the stack.
    * The result of the operation is then pushed back onto the stack.
    *
+   * @param clientId The ID of the client.
    * @param operator The operation to be performed on the stack. Supported operations are "min", "max", "lcm", and "gcd".
    * @throws RemoteException If the operation is invalid or the stack is empty.
    */
-  public synchronized void pushOperation(String operator)
+  public synchronized void pushOperation(String clientId, String operator)
     throws RemoteException {
-    Stack<Object> stack = getCurrentStack();
+    Stack<Object> stack = getCurrentStack(clientId);
 
     // Checks if the stack is empty
-    if (isEmpty()) {
+    if (isEmpty(clientId)) {
       throw new RemoteException("There are no numbers to be calculated.");
     }
 
@@ -91,23 +104,25 @@ public class CalculatorImplementation implements Calculator {
   /**
    * Checks if the stack is empty.
    *
+   * @param clientId The ID of the client.
    * @return True if the stack is empty, false otherwise.
    */
-  public synchronized boolean isEmpty() throws RemoteException {
-    return getCurrentStack().empty();
+  public synchronized boolean isEmpty(String clientId) throws RemoteException {
+    return getCurrentStack(clientId).empty();
   }
 
   /**
    * Pops the top element from the stack.
    *
+   * @param clientId The ID of the client.
    * @return The top element from the stack.
    * @throws RemoteException If the stack is empty.
    */
-  public synchronized int pop() throws RemoteException {
-    Stack<Object> stack = getCurrentStack();
+  public synchronized int pop(String clientId) throws RemoteException {
+    Stack<Object> stack = getCurrentStack(clientId);
 
     // Checks if the stack is empty
-    if (isEmpty()) {
+    if (isEmpty(clientId)) {
       throw new RemoteException("The stack is empty.");
     }
 
@@ -122,18 +137,20 @@ public class CalculatorImplementation implements Calculator {
   /**
    * Delays the execution of the pop method by the specified number of milliseconds.
    *
+   * @param clientId The ID of the client.
    * @param millis The number of milliseconds to delay the execution.
    * @return The result of the pop operation after the delay.
    * @throws RemoteException If the thread is interrupted.
    */
-  public synchronized int delayPop(int millis) throws RemoteException {
+  public synchronized int delayPop(String clientId, int millis)
+    throws RemoteException {
     try {
       Thread.sleep(millis);
     } catch (InterruptedException e) {
       throw new RemoteException("Thread was interrupted.");
     }
 
-    return pop();
+    return pop(clientId);
   }
 
   /**
@@ -158,9 +175,8 @@ public class CalculatorImplementation implements Calculator {
     return a * b / gcd(a, b);
   }
 
-  @Override
-  public void showAll() throws RemoteException {
-    Stack<Object> stack = getCurrentStack();
+  public void showAll(String clientId) throws RemoteException {
+    Stack<Object> stack = clientStacks.get(clientId);
 
     if (stack.isEmpty()) {
       System.out.println("Stack is empty");
