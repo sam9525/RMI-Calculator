@@ -30,10 +30,25 @@ public class CalculatorServer {
       Scanner userInput = new Scanner(System.in);
 
       while (true) {
-        String x = userInput.nextLine();
-        if (x.equals("showall")) {
-          String clientId = userInput.nextLine();
-          calculator.showAll(clientId);
+        // Get the user input and split it into parts
+        String[] parts = userInput.nextLine().split("\\s+", 2);
+        String firstPart = parts[0];
+
+        // Check if the command is valid
+        try {
+          if (firstPart.equals("showall")) {
+            String clientId = parts[1];
+            calculator.showAll(clientId);
+          } else {
+            // If the command is not valid, print an error message
+            System.err.println(
+              "Error: Invalid command. Example: \"showall + clientId\""
+            );
+          }
+        } catch (ArrayIndexOutOfBoundsException e) {
+          // If the command misses the client ID, print an error message
+          System.err.println("Error: Missing client ID");
+          e.printStackTrace();
         }
       }
     } catch (Exception e) {
